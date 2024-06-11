@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulario de Pedido</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Formulario de Pedido</h2>
+    <form action="process_order.php" method="post">
+        <label for="nombre">Nombre:</label><br>
+        <input type="text" id="nombre" name="nombre" required><br>
+        
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        
+        <label for="direccion">Dirección:</label><br>
+        <input type="text" id="direccion" name="direccion" required><br>
+        
+        <label for="telefono">Teléfono:</label><br>
+        <input type="text" id="telefono" name="telefono" required><br>
+        
+        <label for="producto">Producto:</label><br>
+        <select id="producto" name="producto" required>
+            <?php
+            // Conexión a la base de datos
+            $conn = new mysqli("localhost", "root", "", "tienda");
+
+            // Verificar la conexión
+            if ($conn->connect_error) {
+                die("Conexión fallida: " . $conn->connect_error);
+            }
+
+            // Obtener productos
+            $sql = "SELECT id, descripcion, precio FROM productos";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    echo "<option value='" . $row["id"] . "'>" . $row["descripcion"] . " - $" . $row["precio"] . "</option>";
+                }
+            } else {
+                echo "<option value=''>No hay productos disponibles</option>";
+            }
+            $conn->close();
+            ?>
+        </select><br>
+        
+        <label for="cantidad">Cantidad:</label><br>
+        <input type="number" id="cantidad" name="cantidad" required><br>
+
+        <label for="comentarios">Comentarios:</label><br>
+        <textarea id="comentarios" name="comentarios"></textarea><br>
+
+        <input type="submit" value="Enviar Pedido">
+    </form>
+</body>
+</html>
+
